@@ -10,8 +10,15 @@ struct PairedTasks {
 };
 
 vector<PairedTasks> OptimumTaskAssignment(vector<int> task_durations) {
-  // TODO - you fill in here.
-  return {};
+  vector<PairedTasks> result;
+
+  std::sort(task_durations.begin(), task_durations.end());
+  int lo = 0, hi = task_durations.size() - 1;
+  while (lo < hi) {
+    result.push_back({task_durations[lo++], task_durations[hi--]});
+  }
+  
+  return result;
 }
 template <>
 struct SerializationTraits<PairedTasks> : UserSerTraits<PairedTasks, int, int> {

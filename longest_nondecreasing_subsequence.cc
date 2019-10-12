@@ -3,8 +3,17 @@
 using std::vector;
 
 int LongestNondecreasingSubsequenceLength(const vector<int>& A) {
-  // TODO - you fill in here.
-  return 0;
+  vector<int> dp(A.size(), 1);
+
+  for (int i = 1, n = dp.size(); i < n; ++i) {
+    for (int j = i - 1; j >= 0; --j) {
+      if (A[i] >= A[j]) {
+        dp[i] = std::max(dp[i], dp[j] + 1);
+      }
+    }
+  }
+
+  return *max_element(dp.begin(), dp.end());
 }
 
 int main(int argc, char* argv[]) {

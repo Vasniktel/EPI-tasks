@@ -3,8 +3,15 @@
 using std::vector;
 
 int MinimumTotalWaitingTime(vector<int> service_times) {
-  // TODO - you fill in here.
-  return 0;
+  std::sort(service_times.begin(), service_times.end());
+
+  int result = 0, prev = 0;
+  for (int i = 0, n = service_times.size(); i < n - 1; ++i) {
+    prev += service_times[i];
+    result += prev;
+  }
+
+  return result;
 }
 
 int main(int argc, char* argv[]) {

@@ -3,8 +3,29 @@
 using std::vector;
 
 int CalculateLargestRectangle(const vector<int>& heights) {
-  // TODO - you fill in here.
-  return 0;
+  std::stack<int> val, left, size;
+
+  for (int x : heights) {
+    int count = 0, max = 0;
+    while (!val.empty() && val.top() >= x) {
+      count += size.top();                   size.pop();
+      max = std::max(max, left.top());       left.pop();
+      max = std::max(max, val.top() * count); val.pop();
+    }
+
+    val.push(x);
+    left.push(max);
+    size.push(count + 1);
+  }
+
+  int max = 0, count = 0;
+  while (!val.empty()) {
+    count += size.top();                   size.pop();
+    max = std::max(max, left.top());       left.pop();
+    max = std::max(max, val.top() * count); val.pop();
+  }
+
+  return max;
 }
 
 int main(int argc, char* argv[]) {

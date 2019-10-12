@@ -8,8 +8,20 @@ struct Interval {
 };
 
 int FindMinimumVisits(vector<Interval> intervals) {
-  // TODO - you fill in here.
-  return 0;
+  if (intervals.empty()) return 0;
+  std::sort(intervals.begin(), intervals.end(), [](const auto& a, const auto& b) {
+    return a.right < b.right;
+  });
+
+  int result = 1, end = intervals.front().right;
+  for (int i = 1, n = intervals.size(); i < n; ++i) {
+    if (intervals[i].left > end) {
+      result++;
+      end = intervals[i].right;
+    }
+  }
+
+  return result;
 }
 template <>
 struct SerializationTraits<Interval> : UserSerTraits<Interval, int, int> {};
