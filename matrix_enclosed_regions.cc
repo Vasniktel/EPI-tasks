@@ -5,10 +5,44 @@
 #include "test_framework/timed_executor.h"
 using std::string;
 using std::vector;
+using std::deque;
+
+void recur(vector<vector<char>>& board, int x, int y, deque<deque<bool>>& visited) {
+  if (x < 0 || x >= board.size()) return;
+  if (y < 0 || y >= board[0].size()) return;
+  if (visited[x][y]) return;
+  if (board[x][y] != 'W') return;
+  
+  visited[x][y] = true;
+  
+  recur(board, x - 1, y, visited);
+  recur(board, x, y - 1, visited);
+  recur(board, x + 1, y, visited);
+  recur(board, x, y + 1, visited);
+}
 
 void FillSurroundedRegions(vector<vector<char>>* board_ptr) {
-  // TODO - you fill in here.
-  return;
+  auto& board = *board_ptr;
+  int n = board.size(), m = board[0].size();
+  deque<deque<bool>> visited(n, deque<bool>(m));
+  
+  for (int i = 0; i < m; ++i) {
+    recur(board, 0, i, visited);
+    recur(board, n - 1, i, visited);
+  }
+  
+  for (int i = 1; i < n - 1; ++i) {
+    recur(board, i, 0, visited);
+    recur(board, i, m - 1, visited);
+  }
+  
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < m; ++j) {
+      if (!visited[i][j] && board[i][j] == 'W') {
+        board[i][j] = 'B';
+      }
+    }
+  }
 }
 vector<vector<string>> FillSurroundedRegionsWrapper(
     TimedExecutor& executor, vector<vector<string>> board) {

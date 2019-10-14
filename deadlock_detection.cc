@@ -4,14 +4,34 @@
 #include "test_framework/serialization_traits.h"
 #include "test_framework/timed_executor.h"
 using std::vector;
+using std::deque;
 
 struct GraphVertex {
+  mutable bool visited = false;
+  mutable bool on_stack = false;
   vector<GraphVertex*> edges;
 };
 
-bool IsDeadlocked(vector<GraphVertex>* graph) {
-  // TODO - you fill in here.
-  return true;
+bool recur(const GraphVertex& s) {
+  s.visited = true;
+  s.on_stack = true;
+
+  for (const auto* edge : s.edges) {
+    if (edge->on_stack) return true;
+    if (!edge->visited && recur(*edge)) {
+      return true;
+    }
+  }
+
+  s.on_stack = false;
+  return false;
+}
+
+bool IsDeadlocked(vector<GraphVertex>* graph_ptr) {
+  const auto& graph = *graph_ptr;
+  return std::any_of(graph.begin(), graph.end(), [](const auto& vertex) {
+    return !vertex.visited && recur(vertex);
+  });
 }
 struct Edge {
   int from;

@@ -6,12 +6,32 @@
 using std::vector;
 
 struct GraphVertex {
-  int d = -1;
+  int d = 0;
   vector<GraphVertex*> edges;
 };
 
+bool recur(GraphVertex& v, int sign) {
+  v.d = sign;
+
+  for (auto* w : v.edges) {
+    if (w->d == sign) return false;
+    if (w->d == 0 && !recur(*w, -sign)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 bool IsAnyPlacementFeasible(vector<GraphVertex>* graph) {
-  // TODO - you fill in here.
+  for (auto& v : *graph) {
+    if (v.d == 0) {
+      if (!recur(v, 1)) {
+        return false;
+      }
+    }
+  }
+
   return true;
 }
 struct Edge {

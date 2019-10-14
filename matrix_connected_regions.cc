@@ -5,9 +5,24 @@
 using std::deque;
 using std::vector;
 
+void recur(vector<deque<bool>>& image, int x, int y, bool val, deque<deque<bool>>& visited) {
+  if (x < 0 || x >= image.size()) return;
+  if (y < 0 || y >= image[0].size()) return;
+  if (visited[x][y]) return;
+  if (image[x][y] != val) return;
+  visited[x][y] = true;
+  image[x][y] = !val;
+  
+  recur(image, x - 1, y, val, visited);
+  recur(image, x, y - 1, val, visited);
+  recur(image, x + 1, y, val, visited);
+  recur(image, x, y + 1, val, visited);
+}
+
 void FlipColor(int x, int y, vector<deque<bool>>* image_ptr) {
-  // TODO - you fill in here.
-  return;
+  auto& image = *image_ptr;
+  deque<deque<bool>> visited(image.size(), deque<bool>(image[0].size(), false));
+  recur(image, x, y, image[x][y], visited);
 }
 vector<vector<int>> FlipColorWrapper(TimedExecutor& executor, int x, int y,
                                      vector<vector<int>> image) {

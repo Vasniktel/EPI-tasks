@@ -14,10 +14,33 @@ struct Coordinate {
 
   int x, y;
 };
+
+using std::deque;
+
+bool recur(const vector<vector<Color>>& maze, const Coordinate& s, const Coordinate& e, deque<deque<bool>>& visited, vector<Coordinate>& path) {
+  if (s.x < 0 || s.x >= maze.size()) return false;
+  if (s.y < 0 || s.y >= maze[0].size()) return false;
+  if (visited[s.x][s.y]) return false;
+  if (maze[s.x][s.y] == kBlack) return false;
+  path.push_back(s);
+  visited[s.x][s.y] = true;
+
+  bool found = s == e ||
+      recur(maze, {s.x - 1, s.y}, e, visited, path) ||
+      recur(maze, {s.x, s.y - 1}, e, visited, path) ||
+      recur(maze, {s.x + 1, s.y}, e, visited, path) ||
+      recur(maze, {s.x, s.y + 1}, e, visited, path);
+
+  if (!found) path.pop_back();
+  return found;
+}
+
 vector<Coordinate> SearchMaze(vector<vector<Color>> maze, const Coordinate& s,
                               const Coordinate& e) {
-  // TODO - you fill in here.
-  return {};
+  deque<deque<bool>> visited(maze.size(), std::deque<bool>(maze[0].size(), false));
+  vector<Coordinate> result;
+  recur(maze, s, e, visited, result);
+  return result;
 }
 template <>
 struct SerializationTraits<Color> : SerializationTraits<int> {
